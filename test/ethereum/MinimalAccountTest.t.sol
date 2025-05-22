@@ -84,7 +84,8 @@ contract MinimalAccountTest is Test {
         PackedUserOperation memory packedUserOp = sendPackedUserOp
             .generateSignedUserOperation(
                 callDataExecute,
-                helperConfig.getConfig()
+                helperConfig.getConfig(),
+                address(minimalAccount)
             );
 
         bytes32 userOperationHash = IEntryPoint(
@@ -123,7 +124,8 @@ contract MinimalAccountTest is Test {
         PackedUserOperation memory packedUserOp = sendPackedUserOp
             .generateSignedUserOperation(
                 callDataExecute,
-                helperConfig.getConfig()
+                helperConfig.getConfig(),
+                address(minimalAccount)
             );
 
         bytes32 userOperationHash = IEntryPoint(
@@ -141,5 +143,48 @@ contract MinimalAccountTest is Test {
 
         // Assert
         assertEq(validationData, 0);
+    }
+
+    function testEntryPointCanExecuteCommands() public {
+        // Arrange
+        assertEq(usdc.balanceOf(address(minimalAccount)), 0);
+        address destination = address(usdc);
+        uint256 value = 0;
+        bytes memory functionData = abi.encodeWithSelector(
+            ERC20Mock.mint.selector,
+            address(minimalAccount),
+            AMOUNT
+        );
+        bytes memory callDataExecute = abi.encodeWithSelector(
+            MinimalAccount.execute.selector,
+            destination,
+            value,
+            functionData
+        );
+        PackedUserOperation memory packedUserOp = sendPackedUserOp
+            .generateSignedUserOperation(
+                callDataExecute,
+                helperConfig.getConfig(),
+                address(minimalAccount)
+            );
+
+        bytes32 userOperationHash = IEntryPoint(
+            helperConfig.getConfig().entryPoint
+        ).getUserOpHash(packedUserOp);
+
+        vm.deal(address(minimalAccount), 1e18);
+
+        PackedUserOperation[] memory ops = new PackedUserOperation[](1);
+        ops[0] = packedUserOp;
+
+        // Act
+        vm.prank(user);
+        IEntryPoint(helperConfig.getConfig().entryPoint).handleOps(
+            ops,
+            payable(user)
+        );
+
+        // Assert
+        assertEq(usdc.balanceOf(address(minimalAccount)), AMOUNT);
     }
 }
