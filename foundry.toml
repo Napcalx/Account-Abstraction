@@ -5,8 +5,9 @@ libs = ["lib"]
 remappings = [
     "@openzeppelin/contracts=lib/openzeppelin-contracts/contracts",
     "@foundry-devops/src=lib/foundry-devops/src",
-    "@foundry-era-contracts/src/system-contracts=lib/foundry-era-contracts/src/system-contracts/contracts",
+    "@foundry-era-contracts/src/=lib/foundry-era-contracts/src",
 ]
+is-system = true
 
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

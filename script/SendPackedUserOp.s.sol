@@ -8,7 +8,7 @@ import {IEntryPoint} from "lib/account-abstraction/contracts/interfaces/IEntryPo
 import {MessageHashUtils} from "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {MinimalAccount} from "src/ethereum/MinimalAccount.sol";
-import {DevOpsTools} from "lib/foundry-devops/src/DevOpsTools.sol";
+import {DevOpsTools} from "@foundry-devops/src/DevOpsTools.sol";
 
 contract SendPackedUserOp is Script {
     using MessageHashUtils for bytes32;
